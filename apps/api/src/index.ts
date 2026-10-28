@@ -1,11 +1,12 @@
 import { configSchema } from './config.ts';
-import { buildApp } from './buildApp.ts';
+import Fastify from 'fastify';
+import { configureApp, serverOptions } from './buildApp.ts';
 const parsed=configSchema.safeParse(process.env);
 if(!parsed.success){
  console.error('API configuration is missing or invalid. Fill apps/api/.env using .env.example. Values are not logged.');
  process.exit(1);
 }
-const app=await buildApp(parsed.data);
+const app=await configureApp(Fastify(serverOptions()),parsed.data);
 try{
  await app.listen({port:parsed.data.PORT,host:parsed.data.HOST});
  console.log('Gather API listening on port '+parsed.data.PORT);
