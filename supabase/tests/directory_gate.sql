@@ -1,0 +1,33 @@
+begin;
+do $test$
+declare actor uuid; other_actor uuid:=gen_random_uuid(); lease uuid; result jsonb; denied boolean;
+begin
+ select id into actor from auth.users order by created_at limit 1;
+ if actor is null then raise exception 'Test requires an existing confirmed account'; end if;
+ update private.directory_gate set quota_day=(clock_timestamp() at time zone 'UTC')::date,used=0,lease_id=null,lease_owner=null,lease_until=null,next_allowed='-infinity' where id=true;
+ perform set_config('request.jwt.claim.sub',actor::text,true);
+ execute 'set local role authenticated';
+ result:=public.directory_gate_action('reserve');
+ if result->>'status'<>'reserved' then raise exception 'Reservation failed'; end if;
+ lease:=(result->>'lease')::uuid;
+ if public.directory_gate_action('reserve')->>'status'<>'busy' then raise exception 'Concurrent reservation allowed'; end if;
+ perform set_config('request.jwt.claim.sub',other_actor::text,true);
+ perform public.directory_gate_action('release',lease);
+ if public.directory_gate_action('reserve')->>'status'<>'busy' then raise exception 'Other user released lease'; end if;
+ perform set_config('request.jwt.claim.sub',actor::text,true);
+ perform public.directory_gate_action('release',lease);
+ if public.directory_gate_action('reserve')->>'status'<>'busy' then raise exception 'Cooldown bypassed'; end if;
+ denied:=false;
+ begin perform * from private.directory_gate; exception when insufficient_privilege then denied:=true; end;
+ if not denied then raise exception 'Direct gate access allowed'; end if;
+ execute 'reset role';
+ update private.directory_gate set used=50,next_allowed='-infinity',lease_until=null where id=true;
+ execute 'set local role authenticated';
+ if public.directory_gate_action('reserve')->>'status'<>'limit' then raise exception 'Daily cap bypassed'; end if;
+ execute 'reset role';
+ update private.directory_gate set quota_day=(clock_timestamp() at time zone 'UTC')::date-1,used=50,next_allowed='-infinity',lease_until=null where id=true;
+ execute 'set local role authenticated';
+ if public.directory_gate_action('reserve')->>'status'<>'reserved' then raise exception 'UTC reset failed'; end if;
+end $test$;
+rollback;
+select 'directory gate verified; test rolled back' as result;

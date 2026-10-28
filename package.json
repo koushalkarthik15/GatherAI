@@ -1,0 +1,34 @@
+{
+  "name": "gather-event-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @gather/web",
+    "build": "npm run build --workspace @gather/web",
+    "typecheck": "tsc --noEmit -p packages/core/tsconfig.json && tsc --noEmit -p apps/web/tsconfig.json && npm run typecheck --workspace @gather/api",
+    "test": "node --experimental-strip-types --test packages/core/test/*.test.mjs",
+    "lint": "eslint apps/web/src apps/api/src apps/api/test packages/core/src",
+    "preview": "npm run preview --workspace @gather/web",
+    "dev:api": "npm run dev --workspace @gather/api",
+    "test:api": "npm run test --workspace @gather/api",
+    "test:db": "node scripts/test-db.mjs",
+    "test:e2e": "playwright test"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@playwright/test": "^1.64.1",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "supabase": "2.122.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}

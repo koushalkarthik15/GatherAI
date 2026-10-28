@@ -1,0 +1,9 @@
+# Gather Event Studio
+
+> Gather is a workspace for planning single-day college and community events, including tasks, budgets, resources and schedules.
+
+The interactive demo stores changes in the current browser. Saved workspaces require an account. AI planning is explicitly requested and suggestions must be reviewed before they are applied. Estimates and directory results do not guarantee prices, bookings or availability. Event information in saved workspaces is private to its owner.
+
+## Workspace
+
+- [Open Gather](/): Explore the demo or sign in to manage a saved event.

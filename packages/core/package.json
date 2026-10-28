@@ -1,0 +1,16 @@
+{
+  "name": "@gather/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./cloud": "./src/cloud.ts",
+    "./planning": "./src/planning.ts",
+    "./generation": "./src/generation.ts",
+    "./sourcing": "./src/sourcing.ts"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  }
+}
