@@ -19,6 +19,8 @@ npm ci
 npm run dev
 ```
 
+If a clean install reports a missing Rollup/esbuild native package, run `node scripts/repair-lockfile.mjs`, then `npm ci`. The repair resolves dependencies in a temporary directory without an old lockfile or installed modules, validates native entries for Linux/macOS/Windows, and retains a backup of the original lockfile. It may update versions within the manifest ranges; review the printed changes and lockfile diff, then rerun checks before committing.
+
 Open http://localhost:5173. Leave browser Supabase variables unset to stay in demo mode. For saved workspaces, complete the setup below first.
 
 ## New database and authentication setup
@@ -113,7 +115,7 @@ Open http://127.0.0.1:4173 and use Lighthouse Navigation with consistent device/
 
 ## GitHub Actions and Vercel
 
-The workflow runs typecheck, lint, fixture tests, a production web build and Playwright on pushes and pull requests. It never applies database changes. Manual runs on `main` can stage the web and API after checks pass, without assigning production domains. No automatic promotion is configured.
+The workflow runs typecheck, lint, fixture tests, a production web build and Playwright on pushes and pull requests. Both jobs use `npm ci` with the committed cross-platform lockfile; no ad hoc native-package installation is required. It never applies database changes. Manual runs on `main` can stage the web and API after checks pass, without assigning production domains. No automatic promotion is configured.
 
 1. Create two Vercel projects for this repository. Web Root Directory: repository root. API Root Directory: `apps/api`. Enable source files outside the API Root Directory for `packages/core`. The committed Vercel configs define the intended build and routing.
 2. Set GitHub variables `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` for web, `VERCEL_API_ORG_ID` and `VERCEL_API_PROJECT_ID` for API, and `VERCEL_CLI_VERSION` to a reviewed exact version (at least 48.6.0). Store `VERCEL_TOKEN` in the GitHub `production` environment secrets. Configure required reviewers and restrict that environment to `main`.
