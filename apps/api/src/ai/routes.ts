@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import { proposalSchema } from '@gather/core/generation';
+import { proposalSchema } from '../../../../packages/core/src/generation.ts';
 import { ApiError, type Repository } from '../repository.ts';
 import type { Config } from '../config.ts';
 import { createProviderCall, ProviderError, type ProviderCall, type ProviderSettings } from './providers.ts';

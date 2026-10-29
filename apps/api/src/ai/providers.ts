@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { generatedPlanSchema } from '@gather/core/generation';
+import { generatedPlanSchema } from '../../../../packages/core/src/generation.ts';
 export type ProviderName='groq'|'gemini';
 export type ProviderSettings={groqKey:string;geminiKey:string;groqModel:string;geminiModel:string;primary:ProviderName};
 export class ProviderError extends Error{

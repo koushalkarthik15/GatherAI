@@ -5,8 +5,8 @@ import Fastify, { LogController, type FastifyInstance, type FastifyRequest, type
 import cors from '@fastify/cors';
 import { createHash, randomUUID } from 'node:crypto';
 import { z, ZodError } from 'zod';
-import { createEventInput, saveEventInput } from '@gather/core/cloud';
-import type { EventPlan } from '@gather/core';
+import { createEventInput, saveEventInput } from '../../../packages/core/src/cloud.ts';
+import type { EventPlan } from '../../../packages/core/src/index.ts';
 import { ApiError, createRepository, type Repository } from './repository.ts';
 import type { Config } from './config.ts';
 import { safeLogger } from './logging.ts';

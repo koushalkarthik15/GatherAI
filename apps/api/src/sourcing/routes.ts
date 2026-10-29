@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
-import { venueSearchInput } from '@gather/core/sourcing';
+import { venueSearchInput } from '../../../../packages/core/src/sourcing.ts';
 import type { Config } from '../config.ts';
 import { ApiError, type Repository } from '../repository.ts';
 import { createDirectoryGate } from './gate.ts';
