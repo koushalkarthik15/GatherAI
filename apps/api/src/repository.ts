@@ -1,5 +1,5 @@
-import { cloudPlanSchema } from '@gather/core/cloud';
-import type { EventPlan } from '@gather/core';
+import { cloudPlanSchema } from '../../../packages/core/src/cloud.ts';
+import type { EventPlan } from '../../../packages/core/src/index.ts';
 import type { Config } from './config.ts';
 export class ApiError extends Error {
  status:number; code:string; constructor(status:number,code:string,message:string){super(message);this.status=status;this.code=code;}

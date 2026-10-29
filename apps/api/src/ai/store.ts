@@ -1,4 +1,4 @@
-import { proposalSchema, type SavedProposal } from '@gather/core/generation';
+import { proposalSchema, type SavedProposal } from '../../../../packages/core/src/generation.ts';
 import { ApiError } from '../repository.ts';
 import type { Config } from '../config.ts';
 export type ProposalAction='list'|'reserve'|'complete'|'fail'|'apply'|'discard'|'rollback';

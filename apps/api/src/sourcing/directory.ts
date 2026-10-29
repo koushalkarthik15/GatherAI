@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { venueSearchInput, venueSearchResponse, type Venue } from '@gather/core/sourcing';
+import { venueSearchInput, venueSearchResponse, type Venue } from '../../../../packages/core/src/sourcing.ts';
 export class DirectoryError extends Error{
  code:string; transient:boolean;
  constructor(code:string,transient=false){super(code);this.code=code;this.transient=transient;}
@@ -132,7 +132,7 @@ export function createDirectory(settings:DirectorySettings=defaultDirectorySetti
    }
    const result=venueSearchResponse.parse({area:center.display_name,radiusKm:input.radiusKm,
     venues:venues.sort((a,b)=>a.distanceKm-b.distanceKm||a.id.localeCompare(b.id)).slice(0,12),
-    attribution:'© OpenStreetMap contributors — ODbL'});
+    attribution:'Â© OpenStreetMap contributors â€” ODbL'});
    results.set(resultKey,{expires:now()+900000,result});prune(results,64);return result;
   }finally{
     if(gate&&lease){try{await gate.release(lease);}catch{report({event:'directory_request',stage:'venues',code:'GATE_RELEASE_FAILED',durationMs:0});}}

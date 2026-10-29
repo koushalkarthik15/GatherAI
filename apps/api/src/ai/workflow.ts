@@ -1,7 +1,7 @@
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
 import { randomUUID } from 'node:crypto';
-import { materializeGeneratedPlan } from '@gather/core/generation';
-import { totals, type EventPlan } from '@gather/core';
+import { materializeGeneratedPlan } from '../../../../packages/core/src/generation.ts';
+import { totals, type EventPlan } from '../../../../packages/core/src/index.ts';
 import { ProviderError, type ProviderCall, type ProviderName } from './providers.ts';
 export type AttemptDiagnostic={
  event:'ai_attempt';provider:ProviderName;attempt:number;elapsedMs:number;code:string;tokens:number|null;

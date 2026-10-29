@@ -1,18 +1,23 @@
 import { registerSourcingRoutes } from './sourcing/routes.ts';
 import type { Directory } from './sourcing/directory.ts';
 import { registerAiRoutes, type AiDependencies } from './ai/routes.ts';
-import Fastify, { LogController, type FastifyRequest, type FastifyServerOptions } from 'fastify';
+import Fastify, { LogController, type FastifyInstance, type FastifyRequest, type FastifyServerOptions } from 'fastify';
 import cors from '@fastify/cors';
 import { createHash, randomUUID } from 'node:crypto';
 import { z, ZodError } from 'zod';
-import { createEventInput, saveEventInput } from '@gather/core/cloud';
-import type { EventPlan } from '@gather/core';
+import { createEventInput, saveEventInput } from '../../../packages/core/src/cloud.ts';
+import type { EventPlan } from '../../../packages/core/src/index.ts';
 import { ApiError, createRepository, type Repository } from './repository.ts';
 import type { Config } from './config.ts';
 import { safeLogger } from './logging.ts';
 
 export async function buildApp(config:Config,repo?:Repository,logger:FastifyServerOptions['logger']=safeLogger,ai?:AiDependencies,directory?:Directory){
- const app=Fastify({bodyLimit:262144,requestTimeout:20000,logger,logController:new LogController({disableRequestLogging:true}),genReqId:()=>randomUUID(),requestIdHeader:false});
+	return configureApp(Fastify(serverOptions(logger)),config,repo,ai,directory);
+}
+export function serverOptions(logger:FastifyServerOptions['logger']=safeLogger):FastifyServerOptions{
+	return {bodyLimit:262144,requestTimeout:20000,logger,logController:new LogController({disableRequestLogging:true}),genReqId:()=>randomUUID(),requestIdHeader:false};
+}
+export async function configureApp(app:FastifyInstance,config:Config,repo?:Repository,ai?:AiDependencies,directory?:Directory){
  const repository=(request:FastifyRequest)=>repo??createRepository(config,diagnostic=>request.log.warn(diagnostic,'Supabase request failed'));
  app.addHook('onRequest',async(request,reply)=>{reply.header('x-request-id',request.id);
   reply.header('Cache-Control','no-store');
