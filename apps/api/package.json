@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+	"build": "tsc -p tsconfig.build.json",
     "dev": "node --env-file=.env --experimental-strip-types --watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test test/*.test.ts"
@@ -16,6 +17,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+	"light-my-request": "6.8.0",
     "@types/node": "^22.18.0"
   }
 }

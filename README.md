@@ -90,11 +90,12 @@ npm run test:api
 npm run typecheck
 npm run lint
 npm run build
+npm run test:api:build
 npx playwright install chromium
 npm run test:e2e
 ```
 
-Core and API tests use fixtures without real AI spending. Playwright covers selected demo interactions, including task edit/undo/reload and keyboard focus restoration; it does not establish full saved-workspace or provider coverage.
+Core and API tests use fixtures without real AI spending. `npm run build` builds both the web frontend and API JavaScript. `npm run test:api:build` then loads the compiled serverless API handler without TypeScript runtime flags and checks health, authentication rejection and CORS using synthetic settings. The source API tests also cover JSON request bodies through the handler. Playwright covers selected demo interactions, including task edit/undo/reload and keyboard focus restoration; it does not establish full saved-workspace or provider coverage.
 
 For database regression tests, install PostgreSQL client tools (`psql` on PATH), initialize a **disposable Supabase database** using the setup script and create a confirmed test account. Set `GATHER_TEST_DATABASE_URL` privately in your terminal to that database's administrator connection string, then run:
 
@@ -117,13 +118,13 @@ Open http://127.0.0.1:4173 and use Lighthouse Navigation with consistent device/
 
 The workflow runs typecheck, lint, fixture tests, a production web build and Playwright on pushes and pull requests. Both jobs use `npm ci` with the committed cross-platform lockfile; no ad hoc native-package installation is required. It never applies database changes. Manual runs on `main` can stage the web and API after checks pass, without assigning production domains. No automatic promotion is configured.
 
-1. Create two Vercel projects for this repository. Web Root Directory: repository root. API Root Directory: `apps/api`. Enable source files outside the API Root Directory for `packages/core`. The committed Vercel configs define the intended build and routing.
+1. Use two Vercel projects for this repository. Web Root Directory: repository root, framework Vite. API Root Directory: `apps/api`, framework Other (`null` in its Vercel config). Enable source files outside the API Root Directory for `packages/core`. The API installs from the workspace root and exposes `api/index.ts` as an explicit Node request handler; catch-all rewrites keep the existing Fastify routes. It does not open a listening socket in the serverless function. Local `npm run dev:api` continues to use `src/index.ts` as a listening server. The committed Vercel configs define build and routing.
 2. Set GitHub variables `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` for web, `VERCEL_API_ORG_ID` and `VERCEL_API_PROJECT_ID` for API, and `VERCEL_CLI_VERSION` to a reviewed exact version (at least 48.6.0). Store `VERCEL_TOKEN` in the GitHub `production` environment secrets. Configure required reviewers and restrict that environment to `main`.
 3. Configure API environment values from the table above. Keep all provider credentials server-only. Set `WEB_ORIGIN` to the exact frontend origin; preview origins need deliberate configuration.
 4. Configure web `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_API_URL` with the deployed API HTTPS origin. Update Supabase Auth URLs for the web origin. Web environment values are embedded at build time.
 5. In Actions, select Run workflow on `main` with `stage_api` and/or `stage_web`. Establish the API URL first. Inspect and smoke-test each staged deployment, including `/health`, sign-in, saving and directory search, before separately promoting each in Vercel.
 
-Vercel runtime behavior, workspace packaging, cross-origin authentication and deployed provider calls still require staged verification. No deployment is claimed by this repository setup.
+The GitHub Actions deployment jobs are manual, but Vercel's separate Git integration can automatically deploy pushes. Do not treat manual Actions inputs as disabling that integration. Vercel runtime behavior, cross-origin authentication and provider calls still require verification after the maintainer deploys these local changes; local build results do not prove a healthy deployed API.
 
 ## Limits and verification status
 
@@ -131,8 +132,8 @@ Generation allows at most two provider attempts per explicit request, with serve
 
 The shared directory gate has a daily cap, cooldown and expiring lease. An authenticated lease owner can release its own lease directly, so concurrency is not resistant to a deliberately modified client. Directory results and organizer-entered confirmations are not supplier guarantees.
 
-Recorded checks passed: 29 core tests, 31 API tests, typecheck, lint and production build. Two browser tests passed on the developer's machine, and four database scripts passed against the configured project in rollback-only transactions. These results do not prove a fresh install of the consolidated database script or a Vercel deployment. The latest saved mobile Lighthouse report scored 91 performance and 100 accessibility; these are single-run measurements, not universal guarantees. Existing bundle-size and Zod annotation build warnings remain.
+Local checks on October 29 passed 29 core tests, 33 API tests, typecheck, lint, the combined web/API build and the compiled API handler smoke check. The latest saved Playwright run reports passed with no failed tests, matching the maintainer's terminal report. Four database scripts previously passed against the configured project in rollback-only transactions. These results do not prove a fresh install of the consolidated database script or the current Vercel runtime. The latest saved mobile Lighthouse report scored 91 performance and 100 accessibility; these are single-run measurements, not universal guarantees. Existing bundle-size and Zod annotation build warnings remain.
 
 ## Repository contents
 
-Keep application source, lockfile, environment examples, tests, CI, Vercel configuration and `GatherAI_database_setup.sql` in the repository. Private project notes, historical migration files, the old M2 setup guide, historical sourcing SQL, local CLI state, generated reports and actual credentials are excluded. `AGENTS.md` is optional contributor guidance; its local documentation references are not needed to run the app. Code indentation uses tabs.
+Keep application source, lockfile, environment examples, tests, CI, Vercel configuration and `GatherAI_database_setup.sql` in the repository. Private project notes, historical migration files, the old M2 setup guide, historical sourcing SQL, local CLI state, generated reports and actual credentials are excluded. Work directly in the local `main` branch for this single-maintainer project. Do not create branches or PRs unless requested; verify locally before the maintainer pushes or deploys. Code indentation uses tabs.
