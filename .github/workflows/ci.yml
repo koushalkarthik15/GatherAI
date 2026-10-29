@@ -59,9 +59,9 @@ jobs:
     timeout-minutes: 20
     environment: production
     env:
-      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
-      VERCEL_CLI_VERSION: ${{ vars.VERCEL_CLI_VERSION }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || vars.VERCEL_PROJECT_ID }}
+      VERCEL_CLI_VERSION: ${{ secrets.VERCEL_CLI_VERSION || vars.VERCEL_CLI_VERSION }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -94,9 +94,9 @@ jobs:
     timeout-minutes: 20
     environment: production
     env:
-      VERCEL_ORG_ID: ${{ vars.VERCEL_API_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ vars.VERCEL_API_PROJECT_ID }}
-      VERCEL_CLI_VERSION: ${{ vars.VERCEL_CLI_VERSION }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID || vars.VERCEL_API_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID || vars.VERCEL_API_PROJECT_ID }}
+      VERCEL_CLI_VERSION: ${{ secrets.VERCEL_CLI_VERSION || vars.VERCEL_CLI_VERSION }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
