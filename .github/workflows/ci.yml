@@ -59,9 +59,9 @@ jobs:
     timeout-minutes: 20
     environment: production
     env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || vars.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || vars.VERCEL_PROJECT_ID }}
-      VERCEL_CLI_VERSION: ${{ secrets.VERCEL_CLI_VERSION || vars.VERCEL_CLI_VERSION }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || vars.VERCEL_ORG_ID || 'team_b7VA2CsR8yxmCudlzVIMrpzT' }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || vars.VERCEL_PROJECT_ID || 'prj_5ZdQK4U2rLMVaO8lVqsb5wjJKUVc' }}
+      VERCEL_CLI_VERSION: ${{ secrets.VERCEL_CLI_VERSION || vars.VERCEL_CLI_VERSION || '65.4.0' }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -74,7 +74,8 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$VERCEL_CLI_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Set VERCEL_CLI_VERSION to a reviewed exact version.'; exit 1; }
-          test -n "$VERCEL_ORG_ID" && test -n "$VERCEL_PROJECT_ID"
+          [[ "$VERCEL_ORG_ID" == team_* ]] || { echo 'Set a valid Vercel team ID.'; exit 1; }
+          [[ "$VERCEL_PROJECT_ID" == prj_* ]] || { echo 'Set a valid Vercel project ID.'; exit 1; }
           npm install --global "vercel@$VERCEL_CLI_VERSION"
       - name: Pull production configuration
         run: vercel pull --yes --environment=production
@@ -94,9 +95,9 @@ jobs:
     timeout-minutes: 20
     environment: production
     env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID || vars.VERCEL_API_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID || vars.VERCEL_API_PROJECT_ID }}
-      VERCEL_CLI_VERSION: ${{ secrets.VERCEL_CLI_VERSION || vars.VERCEL_CLI_VERSION }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID || vars.VERCEL_API_ORG_ID || 'team_b7VA2CsR8yxmCudlzVIMrpzT' }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID || vars.VERCEL_API_PROJECT_ID || 'prj_eIznYXK1BCKWNWihQoIaM48ghndi' }}
+      VERCEL_CLI_VERSION: ${{ secrets.VERCEL_CLI_VERSION || vars.VERCEL_CLI_VERSION || '65.4.0' }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -109,7 +110,8 @@ jobs:
         run: |
           set -euo pipefail
           [[ "$VERCEL_CLI_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Set VERCEL_CLI_VERSION to a reviewed exact version.'; exit 1; }
-          test -n "$VERCEL_ORG_ID" && test -n "$VERCEL_PROJECT_ID"
+          [[ "$VERCEL_ORG_ID" == team_* ]] || { echo 'Set a valid Vercel team ID.'; exit 1; }
+          [[ "$VERCEL_PROJECT_ID" == prj_* ]] || { echo 'Set a valid Vercel project ID.'; exit 1; }
           npm install --global "vercel@$VERCEL_CLI_VERSION"
       - name: Pull production API configuration
         run: vercel pull --yes --environment=production
