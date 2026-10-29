@@ -3,5 +3,6 @@
 	"framework": null,
 	"installCommand": "cd ../.. && npm ci",
 	"buildCommand": "npm run build",
+	"outputDirectory": "public",
 	"rewrites": [{"source": "/(.*)", "destination": "/api/index"}]
 }
