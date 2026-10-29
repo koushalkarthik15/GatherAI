@@ -1,10 +1,36 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
-  "installCommand": "npm ci",
-  "buildCommand": "npm run build",
-  "outputDirectory": "apps/web/dist",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"framework": "vite",
+	"installCommand": "npm ci",
+	"buildCommand": "npm run build",
+	"outputDirectory": "apps/web/dist",
+	"rewrites": [
+		{
+			"source": "/(.*)",
+			"destination": "/index.html"
+		}
+	],
+	"headers": [
+		{
+			"source": "/(.*)",
+			"headers": [
+				{
+					"key": "Content-Security-Policy",
+					"value": "default-src 'self'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://fehpxxcsiwjdygsgwpia.supabase.co wss://fehpxxcsiwjdygsgwpia.supabase.co https://gatherai-api.vercel.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; frame-src 'none'; upgrade-insecure-requests"
+				},
+				{
+					"key": "X-Frame-Options",
+					"value": "DENY"
+				},
+				{
+					"key": "X-Content-Type-Options",
+					"value": "nosniff"
+				},
+				{
+					"key": "Referrer-Policy",
+					"value": "strict-origin-when-cross-origin"
+				}
+			]
+		}
+	]
 }
